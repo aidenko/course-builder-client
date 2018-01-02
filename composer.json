@@ -1,0 +1,24 @@
+{
+  "name": "aidenko/course-builder-client",
+  "description": "contains a client and basic code for integration a Course Builder into other sites",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Artem Kolombet",
+      "email": "kolombetam@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "nategood/httpful": "^0.2.20"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "4.0.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Aidenko\\CourseBuilderClient\\": "src"
+    }
+  }
+}
