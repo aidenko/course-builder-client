@@ -5,6 +5,32 @@ namespace Aidenko\CourseBuilderClient;
 /**
  * Class Config
  * @package Aidenko\CourseBuilderClient
+ *
+ * @method Config setVerificationUrl(string $url)
+ * @method Config setVerificationUsername(string $username)
+ * @method Config setVerificationPassword(string $password)
+ *
+ * @method string getVerificationUrl()
+ * @method string getVerificationUsername()
+ * @method string getVerificationPassword()
+ *
+ * @method Config setCourseBuilderUrl(string $url)
+ * @method Config setCourseBuilderUsername(string $username)
+ * @method Config setCourseBuilderPassword(string $password)
+ *
+ * @method string getCourseBuilderUrl()
+ * @method string getCourseBuilderUsername()
+ * @method string getCourseBuilderPassword()
+ *
+ * @method Config setLicenseKey(string $key);
+ * @method Config setCustomerId(int $id)
+ * @method Config setSecret(string $secret)
+ * @method Config setPublicKey(string $file_path_or_key_string)
+ *
+ * @method string getLicenseKey()
+ * @method int getCustomerId()
+ * @method string getSecret()
+ * @method string getPublicKey()
  */
 class Config
 {
@@ -106,6 +132,9 @@ class Config
      */
     protected $__set = array();
 
+    /**
+     * @var null
+     */
     protected $__hooks = null;
 
 
@@ -148,8 +177,8 @@ class Config
     public function set($property, $value = null)
     {
         if ($this->isSettableProperty($property)) {
-            if (is_callable ($this->hooks()->{$property}->set)) {
-                $this->{$property} = $this->hooks()->{$property}->set($value);
+            if ($this->hasHook($property, 'set')) {
+                $this->{$property} = $this->getHook($property, 'set')($value);
             } else {
                 $this->{$property} = $value;
             }
@@ -167,8 +196,8 @@ class Config
     public function get($property)
     {
         if ($this->validateProperty($property)) {
-            if (is_callable($this->hooks()->{$property}->get)) {
-                return $this->hooks()->{$property}->get($this->{$property});
+            if ($this->hasHook($property, 'get')) {
+                return $this->getHook($property, 'get')($this->{$property});
             } else {
                 return $this->{$property};
             }
@@ -208,6 +237,9 @@ class Config
         return $this->validateProperty($property) && !in_array($property, $this->__set);
     }
 
+    /**
+     * @return null|\stdClass
+     */
     private function hooks()
     {
         if (is_null($this->__hooks)) {
@@ -227,5 +259,35 @@ class Config
         }
 
         return $this->__hooks;
+    }
+
+    /**
+     * @param $property
+     * @param $action
+     * @return bool
+     */
+    private function hasHook($property, $action)
+    {
+        $hooks = $this->hooks();
+
+        if (isset($hooks->{$property}, $hooks->{$property}->{$action}) && is_callable($hooks->{$property}->{$action})) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @param $property
+     * @param $action
+     * @return null
+     */
+    private function getHook($property, $action)
+    {
+        if ($this->hasHook($property, $action)) {
+            return $this->hooks()->{$property}->{$action};
+        } else {
+            return null;
+        }
     }
 }
