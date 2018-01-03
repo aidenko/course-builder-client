@@ -12,7 +12,6 @@ use Httpful\Request;
  */
 class Client
 {
-
     /**
      * This is a "template" type name in a CourseBuilder.
      * DO NOT CHANGE IT
@@ -49,12 +48,6 @@ class Client
     function __construct(Config $config)
     {
         $this->config = $config;
-
-        if (is_file($public_key)) {
-            $this->public_key = file_get_contents($public_key);
-        } else {
-            $this->public_key = $public_key;
-        }
     }
 
 
@@ -154,7 +147,7 @@ class Client
             if ($this->validateToken($token)) {
                 return (object)array(
                     'status' => true,
-                    'url' => self::COURSE_BUILDER_URL . 'token/' . $token->token . '/show/' . $cb_id
+                    'url' => $this->config->getCourseBuilderUrl() . 'token/' . $token->token . '/show/' . $cb_id
                 );
             }
 
@@ -213,8 +206,9 @@ class Client
             );
 
             if ($this->validateToken($token)) {
-                return $this->makeCall(self::COURSE_BUILDER_URL . 'api', self::COURSE_BUILDER_USERNAME,
-                    self::COURSE_BUILDER_PASSWORD, $params);
+                return $this->makeCall($this->config->getCourseBuilderUrl() . 'api',
+                    $this->config->getCourseBuilderUsername(),
+                    $this->config->getCourseBuilderPassword(), $params);
             }
 
         } catch (\Exception $e) {
@@ -242,7 +236,7 @@ class Client
 
             if ($this->validateToken($token)) {
 
-                $url = self::COURSE_BUILDER_URL . 'token/' . $token->token . '/preview/' . $cb_id . '/' . intval($wrapper);
+                $url = $this->config->getCourseBuilderUrl() . 'token/' . $token->token . '/preview/' . $cb_id . '/' . intval($wrapper);
 
                 if ($params && is_array($params) && count($params)) {
 
@@ -313,17 +307,16 @@ class Client
      */
     protected function getToken($save_callback_url = '')
     {
-
         $secret = '';
 
-        if (!openssl_public_encrypt($this->secret, $secret, $this->public_key)) {
-            $secret = $this->secret;
+        if (!openssl_public_encrypt($this->config->getSecret(), $secret, $this->config->getPublicKey())) {
+            $secret = $this->config->getSecret();
         }
 
         $params = array(
-            'key' => $this->license_key,
+            'key' => $this->config->getLicenseKey(),
             'secret' => base64_encode($secret),
-            'id' => $this->customer_id
+            'id' => $this->config->getCustomerId()
         );
 
         if ($save_callback_url) {
@@ -334,8 +327,9 @@ class Client
             }
         }
 
-        return $this->makeCall(self::VERIFICATION_URL . 'api/token/get', self::VERIFICATION_USERNAME,
-            self::VERIFICATION_PASSWORD, $params);
+        return $this->makeCall($this->config->getVerificationUrl() . 'api/token/get',
+            $this->config->getVerificationUsername(),
+            $this->config->getVerificationPassword(), $params);
     }
 
 
@@ -399,8 +393,9 @@ class Client
                     'tags' => json_encode(new \stdClass())
                 );
 
-                return $this->makeCall(self::COURSE_BUILDER_URL . 'api', self::COURSE_BUILDER_USERNAME,
-                    self::COURSE_BUILDER_PASSWORD, $params);
+                return $this->makeCall($this->config->getCourseBuilderUrl() . 'api',
+                    $this->config->getCourseBuilderUsername(),
+                    $this->config->getCourseBuilderPassword(), $params);
             }
         } catch (\Exception $e) {
             return (object)array(
@@ -426,8 +421,9 @@ class Client
                     'token' => $token->token
                 );
 
-                return $this->makeCall(self::COURSE_BUILDER_URL . 'api', self::COURSE_BUILDER_USERNAME,
-                    self::COURSE_BUILDER_PASSWORD, $params);
+                return $this->makeCall($this->config->getCourseBuilderUrl() . 'api',
+                    $this->config->getCourseBuilderUsername(),
+                    $this->config->getCourseBuilderPassword(), $params);
             }
 
         } catch (\Exception $e) {
@@ -451,7 +447,7 @@ class Client
             if ($this->validateToken($token)) {
                 return (object)array(
                     'status' => true,
-                    'url' => self::COURSE_BUILDER_URL . 'token/' . $token->token . '/' . $type . 's/create'
+                    'url' => $this->config->getCourseBuilderUrl() . 'token/' . $token->token . '/' . $type . 's/create'
                 );
             }
 
@@ -487,25 +483,5 @@ class Client
         }
 
         return json_encode($response);
-
-
-        //        $options = array(
-//            CURLOPT_URL => $url,
-//            CURLOPT_POST => true,
-//            CURLOPT_POSTFIELDS => $params,
-//            CURLOPT_RETURNTRANSFER => true,
-//            CURLOPT_USERAGENT => $_SERVER['HTTP_USER_AGENT']
-//        );
-//
-//        if ($username != '' || $password != '') {
-//            $options[CURLOPT_USERPWD] = $username . ':' . $password;
-//        }
-//
-//        $ch = curl_init();
-//        curl_setopt_array($ch, ($options));
-//        $response = curl_exec($ch);
-//        curl_close($ch);
-//
-//        return json_decode($response);
     }
 }
