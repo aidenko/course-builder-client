@@ -14,52 +14,6 @@ class Client
 {
 
     /**
-     * This is a url of a Course Builder license server
-     * Change it with an actual value
-     */
-    const VERIFICATION_URL = 'http://cb-license.test/';
-
-
-    /**
-     * This is a username for a web authentication on a license server.
-     * Change it with an actual value
-     * If it does not have authentication - leave blank
-     */
-    const VERIFICATION_USERNAME = '';
-
-
-    /**
-     * This is a password for a web authentication on a license server.
-     * Change it with an actual value
-     * If it does not have authentication - leave blank
-     */
-    const VERIFICATION_PASSWORD = '';
-
-
-    /**
-     * This is a url of a CourseBuilder application
-     * Change it with an actual value
-     */
-    const COURSE_BUILDER_URL = 'http://course-builder.app/';
-
-
-    /**
-     * This is a username for a web authentication on a CourseBuilder application.
-     * Change it with an actual value
-     * If it does not have authentication - leave blank
-     */
-    const COURSE_BUILDER_USERNAME = '';
-
-
-    /**
-     * This is a password for a web authentication on a CourseBuilder application.
-     * Change it with an actual value
-     * If it does not have authentication - leave blank
-     */
-    const COURSE_BUILDER_PASSWORD = '';
-
-
-    /**
      * This is a "template" type name in a CourseBuilder.
      * DO NOT CHANGE IT
      */
@@ -81,54 +35,20 @@ class Client
 
 
     /**
-     * @var string
-     * This is a licence key for a CourseBuilder application.
-     * It looks like AB-1A2B3C-0D-1A2B3D-0099
-     * It can be public
-     * Receive it from a CB supplier
+     * @var null
+     *
+     * This is a Config for the Cb client
      */
-    protected $license_key = '';
-
-
-    /**
-     * @var int
-     * This is a customer id, simple integer
-     * It can be public
-     * Receive it from a CB supplier
-     */
-    protected $customer_id = 0;
-
-
-    /**
-     * @var string
-     * This is a secret string for calls to CourseBuilder. It is a 32-alphanumeric string
-     * Keep in secret
-     * Receive it from a CB supplier
-     */
-    protected $secret = '';
-
-
-    /**
-     * @var string
-     * This is a public key for call to CourseBuilder. File or string
-     * It can be public
-     * Receive it from a CB supplier
-     */
-    protected $public_key = '';
+    protected $config = null;
 
 
     /**
      * CourseBuilderClient constructor.
-     * @param $licence_key
-     * @param $customer_id
-     * @param $secret
-     * @param $public_key
+     * @param Config $config
      */
-    function __construct($licence_key, $customer_id, $secret, $public_key)
+    function __construct(Config $config)
     {
-        $this->license_key = $licence_key;
-        $this->customer_id = $customer_id;
-        $this->secret = $secret;
+        $this->config = $config;
 
         if (is_file($public_key)) {
             $this->public_key = file_get_contents($public_key);
