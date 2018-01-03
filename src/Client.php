@@ -195,17 +195,17 @@ class Client
      */
     public function getPreview($cb_id)
     {
-
         try {
+
             $token = $this->getToken();
 
-            $params = array(
-                'action' => 'preview',
-                'id' => $cb_id,
-                'token' => $token->token
-            );
-
             if ($this->validateToken($token)) {
+                $params = array(
+                    'action' => 'preview',
+                    'id' => $cb_id,
+                    'token' => $token->token
+                );
+
                 return $this->makeCall($this->config->getCourseBuilderUrl() . 'api',
                     $this->config->getCourseBuilderUsername(),
                     $this->config->getCourseBuilderPassword(), $params);
@@ -415,6 +415,7 @@ class Client
             $token = $this->getToken();
 
             if ($this->validateToken($token)) {
+
                 $params = array(
                     'action' => 'details',
                     'id' => $cb_id,
@@ -470,6 +471,7 @@ class Client
     {
         try {
             $request = Request::post($url, $params, Mime::FORM)
+                ->addHeader('User-Agent', $_SERVER["HTTP_USER_AGENT"])
                 ->expects(Mime::JSON);
 
             if ($username !== '' || $password !== '') {
@@ -479,9 +481,9 @@ class Client
             $response = $request->send()->body;
 
         } catch (ConnectionErrorException $e) {
-            $response = array();
+            $response = null;
         }
 
-        return json_encode($response);
+        return $response;
     }
 }
