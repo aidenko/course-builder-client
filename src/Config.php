@@ -255,6 +255,18 @@ class Config
                 }
             };
 
+            $hooks->verification_url = new \stdClass();
+
+            $hooks->verification_url->set = function ($url) {
+                return trim($url, ' /') . '/';
+            };
+
+            $hooks->course_builder_url = new \stdClass();
+
+            $hooks->course_builder_url->set = function ($url) {
+                return trim($url, ' /') . '/';
+            };
+
             $this->__hooks = $hooks;
         }
 

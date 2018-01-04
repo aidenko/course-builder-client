@@ -300,6 +300,37 @@ class Client
 
 
     /**
+     *
+     * The method allows to get info about current account
+     *
+     * @return array|mixed|object
+     */
+    public function getAccountDetails()
+    {
+        try {
+            $token = $this->getToken();
+
+            if ($this->validateToken($token)) {
+
+                $params = array(
+                    'action' => 'account-info',
+                    'token' => $token->token
+                );
+
+                return $this->makeCall($this->config->getVerificationUrl().'api/token/info',
+                    $this->config->getVerificationUsername(), $this->config->getVerificationPassword(), $params);
+            }
+
+        } catch (\Exception $e) {
+            return (object)array(
+                'status' => false,
+                'msg'    => $e->getMessage()
+            );
+        }
+    }
+
+
+    /**
      * The method makes a call to a License server and receives a token for CourseBuilder requests
      *
      * @param string $save_callback_url - url that CourseBuilder sends a request to when saves a Course / Template / Certificate
@@ -342,7 +373,6 @@ class Client
      */
     protected function validateToken($token)
     {
-
         $msg = (isset($token->message) && is_array($token->message) ? implode('; ', $token->message) : '');
 
         if (!is_object($token)) {
