@@ -317,14 +317,14 @@ class Client
                     'token' => $token->token
                 );
 
-                return $this->makeCall($this->config->getVerificationUrl().'api/token/info',
+                return $this->makeCall($this->config->getVerificationUrl() . 'api/token/info',
                     $this->config->getVerificationUsername(), $this->config->getVerificationPassword(), $params);
             }
 
         } catch (\Exception $e) {
             return (object)array(
                 'status' => false,
-                'msg'    => $e->getMessage()
+                'msg' => $e->getMessage()
             );
         }
     }
@@ -408,19 +408,14 @@ class Client
             if ($this->validateToken($token)) {
                 $params = array(
                     'action' => 'create',
-                    'create' => $type,
+                    'type' => $type,
                     'token' => $token->token,
                     'attributes' => json_encode((object)array(
                         'title' => $title,
                         'description' => $description,
                         'keywords' => $keywords,
                         'notes' => $notes
-                    )),
-                    'options' => json_encode(new \stdClass()),
-                    'course_data' => json_encode(new \stdClass()),
-                    'template_data' => json_encode(new \stdClass()),
-                    'resources' => json_encode(array()),
-                    'tags' => json_encode(new \stdClass())
+                    ))
                 );
 
                 return $this->makeCall($this->config->getCourseBuilderUrl() . 'api',
