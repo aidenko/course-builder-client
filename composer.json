@@ -1,6 +1,6 @@
 {
   "name": "aidenko/course-builder-client",
-  "description": "contains a client and basic code for integration a Course Builder into other sites",
+  "description": "contains a client and basic code to communicate a site with a Course Builder",
   "type": "library",
   "license": "MIT",
   "authors": [
