@@ -43,6 +43,7 @@ class Client
 
     /**
      * CourseBuilderClient constructor.
+     *
      * @param Config $config
      */
     function __construct(Config $config)
@@ -55,6 +56,7 @@ class Client
      * The method allows to get a url of the CourseBuilder application where a use can create a new course
      *
      * @param $save_callback_url - url that CourseBuilder sends a request to when saves a Course
+     *
      * @return object
      */
     public function getCreateCourseUrl($save_callback_url)
@@ -67,6 +69,7 @@ class Client
      * The method allows to get a url of the CourseBuilder application where a use can create a new template
      *
      * @param $save_callback_url - url that CourseBuilder sends a request to when saves a Template
+     *
      * @return object
      */
     public function getCreateTemplateUrl($save_callback_url)
@@ -79,6 +82,7 @@ class Client
      * The method allows to get a url of the CourseBuilder application where a use can create a new certificate
      *
      * @param $save_callback_url - url that CourseBuilder sends a request to when saves a Certificate
+     *
      * @return object
      */
     public function getCreateCertificateUrl($save_callback_url)
@@ -94,6 +98,7 @@ class Client
      * @param string $description
      * @param string $keywords
      * @param string $notes
+     *
      * @return array|mixed|object
      */
     public function createCourse($title = '', $description = '', $keywords = '', $notes = '')
@@ -109,6 +114,7 @@ class Client
      * @param string $description
      * @param string $keywords
      * @param string $notes
+     *
      * @return array|mixed|object
      */
     public function createTemplate($title = '', $description = '', $keywords = '', $notes = '')
@@ -124,6 +130,7 @@ class Client
      * @param string $description
      * @param string $keywords
      * @param string $notes
+     *
      * @return array|mixed|object
      */
     public function createCertificate($title = '', $description = '', $keywords = '', $notes = '')
@@ -137,6 +144,7 @@ class Client
      *
      * @param $cb_id - id of a course in a CourseBuilder application
      * @param $save_callback_url - url that CourseBuilder sends a request to when saves a Course
+     *
      * @return object
      */
     public function getCourseUrl($cb_id, $save_callback_url)
@@ -165,6 +173,7 @@ class Client
      *
      * @param $cb_id - id of a template in a CourseBuilder application
      * @param $save_callback_url - url that CourseBuilder sends a request to when saves a Template
+     *
      * @return object
      */
     public function getTemplateUrl($cb_id, $save_callback_url)
@@ -178,6 +187,7 @@ class Client
      *
      * @param $cb_id - id of a certificate in a CourseBuilder application
      * @param $save_callback_url - url that CourseBuilder sends a request to when saves a Certificate
+     *
      * @return object
      */
     public function getCertificateUrl($cb_id, $save_callback_url)
@@ -191,6 +201,7 @@ class Client
      * This HTML can be inserted on a page. Includes a valid HTML page with DOCTYPE etc.
      *
      * @param $cb_id - id of a course in a CourseBuilder application
+     *
      * @return array|mixed|object
      */
     public function getPreview($cb_id)
@@ -207,8 +218,7 @@ class Client
                 );
 
                 return $this->makeCall($this->config->getCourseBuilderUrl() . 'api',
-                    $this->config->getCourseBuilderUsername(),
-                    $this->config->getCourseBuilderPassword(), $params);
+                    $this->config->getCourseBuilderUsername(), $this->config->getCourseBuilderPassword(), $params);
             }
 
         } catch (\Exception $e) {
@@ -223,10 +233,11 @@ class Client
     /**
      * The method allows to receive a url of a CoursePLayer with a rendered Course.
      *
-     * @param $cb_id - id of a course in a CourseBuilder application
+     * @param       $cb_id - id of a course in a CourseBuilder application
      * @param array $params - different parameters for url, added after # as name=value&name2=value2
      * @param bool $wrapper - when set FALSE the player does not add a header, margins etc, it displays only a course container.
-     *              Useful for embedding a player on different pages, to scale a player etc.
+     *                       Useful for embedding a player on different pages, to scale a player etc.
+     *
      * @return object
      */
     public function getPreviewUrl($cb_id, $params = array(), $wrapper = true)
@@ -267,6 +278,7 @@ class Client
      * The method allows to receive course details with slides, rendered preview, rendered HTML slides etc.
      *
      * @param $cb_id - id of a course in a CourseBuilder application
+     *
      * @return array|mixed|object
      */
     public function getCourseDetails($cb_id)
@@ -279,6 +291,7 @@ class Client
      * The method allows to receive template details with slides, rendered preview, rendered HTML slides etc.
      *
      * @param $cb_id - id of a template in a CourseBuilder application
+     *
      * @return array|mixed|object
      */
     public function getTemplateDetails($cb_id)
@@ -291,6 +304,7 @@ class Client
      * The method allows to receive certificate details with slides, rendered preview, rendered HTML slides etc.
      *
      * @param $cb_id - id of a certificate in a CourseBuilder application
+     *
      * @return array|mixed|object
      */
     public function getCertificateDetails($cb_id)
@@ -313,11 +327,11 @@ class Client
             if ($this->validateToken($token)) {
 
                 $params = array(
-                    'action' => 'account-info',
+                    'id' => $this->config->getCustomerId(),
                     'token' => $token->token
                 );
 
-                return $this->makeCall($this->config->getVerificationUrl() . 'api/token/info',
+                return $this->makeCall($this->config->getVerificationUrl() . 'api/customer/info',
                     $this->config->getVerificationUsername(), $this->config->getVerificationPassword(), $params);
             }
 
@@ -334,6 +348,7 @@ class Client
      * The method makes a call to a License server and receives a token for CourseBuilder requests
      *
      * @param string $save_callback_url - url that CourseBuilder sends a request to when saves a Course / Template / Certificate
+     *
      * @return array|mixed|object
      */
     protected function getToken($save_callback_url = '')
@@ -359,8 +374,7 @@ class Client
         }
 
         return $this->makeCall($this->config->getVerificationUrl() . 'api/token/get',
-            $this->config->getVerificationUsername(),
-            $this->config->getVerificationPassword(), $params);
+            $this->config->getVerificationUsername(), $this->config->getVerificationPassword(), $params);
     }
 
 
@@ -368,6 +382,7 @@ class Client
      * The method validates a token received from a License server
      *
      * @param $token - this is a token object returned by getToken() method
+     *
      * @return bool
      * @throws \Exception
      */
@@ -392,11 +407,12 @@ class Client
 
 
     /**
-     * @param $type
+     * @param        $type
      * @param string $title
      * @param string $description
      * @param string $keywords
      * @param string $notes
+     *
      * @return array|mixed|object
      */
     protected function createItem($type, $title = '', $description = '', $keywords = '', $notes = '')
@@ -419,8 +435,7 @@ class Client
                 );
 
                 return $this->makeCall($this->config->getCourseBuilderUrl() . 'api',
-                    $this->config->getCourseBuilderUsername(),
-                    $this->config->getCourseBuilderPassword(), $params);
+                    $this->config->getCourseBuilderUsername(), $this->config->getCourseBuilderPassword(), $params);
             }
         } catch (\Exception $e) {
             return (object)array(
@@ -432,6 +447,7 @@ class Client
 
     /**
      * @param $cb_id
+     *
      * @return array|mixed|object
      */
     protected function getItemDetails($cb_id)
@@ -448,8 +464,7 @@ class Client
                 );
 
                 return $this->makeCall($this->config->getCourseBuilderUrl() . 'api',
-                    $this->config->getCourseBuilderUsername(),
-                    $this->config->getCourseBuilderPassword(), $params);
+                    $this->config->getCourseBuilderUsername(), $this->config->getCourseBuilderPassword(), $params);
             }
 
         } catch (\Exception $e) {
@@ -463,6 +478,7 @@ class Client
     /**
      * @param $type
      * @param $save_callback_url
+     *
      * @return object
      */
     protected function getCreateItemUrl($type, $save_callback_url)
@@ -486,18 +502,18 @@ class Client
     }
 
     /**
-     * @param $url
-     * @param $username
-     * @param $password
+     * @param       $url
+     * @param       $username
+     * @param       $password
      * @param array $params
+     *
      * @return array|mixed|object
      */
     protected function makeCall($url, $username, $password, $params = array())
     {
         try {
-            $request = Request::post($url, $params, Mime::FORM)
-                ->addHeader('User-Agent', $_SERVER["HTTP_USER_AGENT"])
-                ->expects(Mime::JSON);
+            $request = Request::post($url, $params, Mime::FORM)->addHeader('User-Agent',
+                $_SERVER["HTTP_USER_AGENT"])->expects(Mime::JSON);
 
             if ($username !== '' || $password !== '') {
                 $request->basicAuth($username, $password);
